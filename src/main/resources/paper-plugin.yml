@@ -1,0 +1,18 @@
+name: ${name}
+version: ${version}
+main: me.mapacheee.gratituderoses.GratitudeRosesPlugin
+api-version: "1.21"
+description: ${description}
+authors: ["Mapacheee"]
+website: ""
+folia-supported: true
+dependencies:
+  - name: PlaceholderAPI
+    optional: true
+    bootstrap: false
+    load: AFTER
+permissions:
+  gratituderoses.admin:
+    description: access to admin commands
+    default: op
+

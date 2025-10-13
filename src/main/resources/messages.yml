@@ -1,0 +1,13 @@
+prefix: ""
+player:
+  thanked-chat: "&aGracias por apoyarnos, {player}. Eres la persona #{number} que lo ha hecho! (Total: {total})"
+  title-main: "&c&lGracias"
+  title-sub: "&7Tu apoyo cuenta #{number}"
+  cooldown: "&cDebes esperar {seconds}s para volver a agradecer."
+  wrong-world: "&cEste gesto solo está disponible en este lobby."
+admin:
+  reloaded: "&aConfiguración recargada."
+  stats-global: "&eLanzamientos globales: &b{total}"
+  stats-player: "&e{player}: &b{player_total} &7lanzamientos, &7primer lanzamiento: &b{first_date}"
+  stats-player-none: "&e{player} aún no ha realizado lanzamientos."
+

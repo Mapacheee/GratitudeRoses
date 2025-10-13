@@ -1,0 +1,27 @@
+enabled-worlds:
+  - world
+item:
+  trigger-materials:
+    - ROSE_BUSH
+  hotbar:
+    enabled: true
+    slot: 4
+    name: "&c&lRosa de Gratitud"
+    lore:
+      - "&7Lanza esta rosa al agua para agradecer."
+      - "&7Recibirás efectos y un mensaje especial."
+detection:
+  water-detection-window-seconds: 10
+  cooldown-seconds: 3
+  return-item-after-seconds: 3
+effects:
+  duration-seconds: 3
+  particle-count: 40
+  show-title: true
+  sounds:
+    - name: ENTITY_PLAYER_LEVELUP
+      volume: 1.0
+      pitch: 1.0
+database:
+  file: gratitude.db
+
