@@ -71,9 +71,7 @@ public class GratitudeService {
         final long timeoutTicks = config.detectionWindowSeconds() * 20L;
         final long[] elapsed = {0L};
         final boolean[] done = {false};
-        scheduler.runRegion(item, () -> {
-            if (!item.isValid() || item.isDead()) return;
-        });
+        scheduler.runRegion(item, () -> {});
         scheduler.runRegionLater(item, () -> {}, 1L);
         scheduler.runRegion(item, new Runnable() {
             @Override
@@ -151,7 +149,6 @@ public class GratitudeService {
         Particle.DustOptions dust = config.dustOptions();
         int durationTicks = config.effectsDurationSeconds() * 20;
         for (int i = 0; i < durationTicks; i += 5) {
-            final int delay = i;
             scheduler.runLaterSync(() -> {
                 if (dustP != null && isDustLike(dustP)) {
                     world.spawnParticle(dustP, at, count, 0.3, 0.2, 0.3, dust);
@@ -159,7 +156,7 @@ public class GratitudeService {
                 if (splashP != null) {
                     world.spawnParticle(splashP, at, Math.max(5, count / 3), 0.3, 0.2, 0.3, 0.01);
                 }
-            }, delay);
+            }, i);
         }
         for (me.mapacheee.gratituderoses.shared.ConfigService.SoundSpec s : config.soundSpecs()) {
             world.playSound(at, s.sound(), s.volume(), s.pitch());
