@@ -18,10 +18,13 @@ effects:
   duration-seconds: 3
   particle-count: 40
   show-title: true
+  particle-dust-type: REDSTONE
+  particle-dust-color: "#FF0000"
+  particle-dust-size: 1.5
+  particle-splash-type: WATER_SPLASH
   sounds:
     - name: ENTITY_PLAYER_LEVELUP
       volume: 1.0
       pitch: 1.0
 database:
   file: gratitude.db
-

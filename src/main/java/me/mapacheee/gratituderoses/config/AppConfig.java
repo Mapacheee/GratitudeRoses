@@ -34,6 +34,10 @@ public record AppConfig(
             @Setting("duration-seconds") int durationSeconds,
             @Setting("particle-count") int particleCount,
             @Setting("show-title") boolean showTitle,
+            @Setting("particle-dust-type") String particleDustType,
+            @Setting("particle-dust-color") String particleDustColor,
+            @Setting("particle-dust-size") double particleDustSize,
+            @Setting("particle-splash-type") String particleSplashType,
             List<SoundSpec> sounds
     ) {}
 

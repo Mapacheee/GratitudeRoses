@@ -36,6 +36,9 @@ dependencies {
 
     implementation("org.xerial:sqlite-jdbc:3.46.0.0")
     compileOnly("me.clip:placeholderapi:2.11.6")
+
+    implementation("net.kyori:adventure-text-minimessage:4.17.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.17.0")
 }
 
 tasks.processResources {

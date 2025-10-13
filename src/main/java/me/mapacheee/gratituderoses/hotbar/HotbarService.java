@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.thewinterframework.service.annotation.Service;
 import me.mapacheee.gratituderoses.shared.ConfigService;
 import me.mapacheee.gratituderoses.shared.TextService;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -30,10 +31,10 @@ public class HotbarService {
         ItemStack stack = new ItemStack(mat, 1);
         ItemMeta meta = stack.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(text.color(config.hotbarName()));
-            List<String> lore = new ArrayList<>();
-            for (String line : config.hotbarLore()) lore.add(text.color(line));
-            meta.setLore(lore);
+            meta.displayName(text.raw(config.hotbarName()));
+            List<Component> lore = new ArrayList<>();
+            for (String line : config.hotbarLore()) lore.add(text.raw(line));
+            meta.lore(lore);
             stack.setItemMeta(meta);
         }
         return stack;
@@ -51,4 +52,3 @@ public class HotbarService {
         return config.enabledWorlds().isEmpty() || config.enabledWorlds().contains(worldName);
     }
 }
-

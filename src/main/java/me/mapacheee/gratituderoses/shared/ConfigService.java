@@ -5,8 +5,10 @@ import com.thewinterframework.configurate.Container;
 import com.thewinterframework.service.annotation.Service;
 import me.mapacheee.gratituderoses.config.AppConfig;
 import me.mapacheee.gratituderoses.config.MessagesConfig;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
 
@@ -25,23 +27,16 @@ public class ConfigService {
         this.messagesC = messagesC;
     }
 
-    private AppConfig cfg() {
-        return configC.get();
-    }
-
-    private MessagesConfig msgCfg() {
-        return messagesC.get();
-    }
+    private AppConfig cfg() { return configC.get(); }
+    private MessagesConfig msgCfg() { return messagesC.get(); }
 
     public List<String> enabledWorlds() {
-        var c = cfg();
-        var list = c == null ? null : c.enabledWorlds();
+        var list = cfg().enabledWorlds();
         return list == null ? Collections.emptyList() : list;
     }
 
     public Set<Material> triggerMaterials() {
-        var c = cfg();
-        List<String> list = c == null || c.item() == null ? List.of("ROSE_BUSH") : c.item().triggerMaterials();
+        List<String> list = cfg().item() == null ? List.of("ROSE_BUSH") : cfg().item().triggerMaterials();
         if (list == null || list.isEmpty()) list = List.of("ROSE_BUSH");
         Set<Material> out = new HashSet<>();
         for (String s : list) {
@@ -56,67 +51,71 @@ public class ConfigService {
     }
 
     public boolean hotbarEnabled() {
-        var c = cfg();
-        return c == null || c.item() == null || c.item().hotbar() == null || c.item().hotbar().enabled();
+        var item = cfg().item();
+        var hotbar = item == null ? null : item.hotbar();
+        return hotbar == null || hotbar.enabled();
     }
 
     public int hotbarSlot() {
-        var c = cfg();
-        int slot = c == null || c.item() == null || c.item().hotbar() == null ? 4 : c.item().hotbar().slot();
+        var item = cfg().item();
+        var hotbar = item == null ? null : item.hotbar();
+        int slot = hotbar == null ? 4 : hotbar.slot();
         return Math.max(0, Math.min(8, slot));
     }
 
     public String hotbarName() {
-        var c = cfg();
-        String name = c == null || c.item() == null || c.item().hotbar() == null ? null : c.item().hotbar().name();
+        var item = cfg().item();
+        var hotbar = item == null ? null : item.hotbar();
+        String name = hotbar == null ? null : hotbar.name();
         return name == null ? "&c&lRosa de Gratitud" : name;
     }
 
     public List<String> hotbarLore() {
-        var c = cfg();
-        List<String> lore = c == null || c.item() == null || c.item().hotbar() == null ? null : c.item().hotbar().lore();
+        var item = cfg().item();
+        var hotbar = item == null ? null : item.hotbar();
+        List<String> lore = hotbar == null ? null : hotbar.lore();
         return lore == null ? Collections.emptyList() : lore;
     }
 
     public int detectionWindowSeconds() {
-        var c = cfg();
-        int v = c == null || c.detection() == null ? 10 : c.detection().waterDetectionWindowSeconds();
+        var det = cfg().detection();
+        int v = det == null ? 10 : det.waterDetectionWindowSeconds();
         return Math.max(1, v);
     }
 
     public int cooldownSeconds() {
-        var c = cfg();
-        int v = c == null || c.detection() == null ? 3 : c.detection().cooldownSeconds();
+        var det = cfg().detection();
+        int v = det == null ? 3 : det.cooldownSeconds();
         return Math.max(0, v);
     }
 
     public int returnItemAfterSeconds() {
-        var c = cfg();
-        int v = c == null || c.detection() == null ? 3 : c.detection().returnItemAfterSeconds();
+        var det = cfg().detection();
+        int v = det == null ? 3 : det.returnItemAfterSeconds();
         return Math.max(0, v);
     }
 
     public int effectsDurationSeconds() {
-        var c = cfg();
-        int v = c == null || c.effects() == null ? 3 : c.effects().durationSeconds();
+        var eff = cfg().effects();
+        int v = eff == null ? 3 : eff.durationSeconds();
         return Math.max(1, v);
     }
 
     public int particleCount() {
-        var c = cfg();
-        int v = c == null || c.effects() == null ? 40 : c.effects().particleCount();
+        var eff = cfg().effects();
+        int v = eff == null ? 40 : eff.particleCount();
         return Math.max(1, v);
     }
 
     public boolean showTitle() {
-        var c = cfg();
-        return c == null || c.effects() == null || c.effects().showTitle();
+        var eff = cfg().effects();
+        return eff == null || eff.showTitle();
     }
 
     public List<SoundSpec> soundSpecs() {
         List<SoundSpec> sounds = new ArrayList<>();
-        var c = cfg();
-        List<AppConfig.SoundSpec> list = c == null || c.effects() == null ? null : c.effects().sounds();
+        var eff = cfg().effects();
+        List<AppConfig.SoundSpec> list = eff == null ? null : eff.sounds();
         if (list != null) {
             for (AppConfig.SoundSpec s : list) {
                 String name = s.name();
@@ -157,24 +156,95 @@ public class ConfigService {
         return defaultSound();
     }
 
-    public String prefix() {
-        var m = msgCfg();
-        return m == null || m.prefix() == null ? "" : m.prefix();
+    public Particle dustParticle() {
+        var eff = cfg().effects();
+        String type = eff == null || eff.particleDustType() == null ? "REDSTONE" : eff.particleDustType();
+        // Try multiple dust-like names
+        for (String cand : List.of(type, "REDSTONE", "DUST", "DUST_COLOR_TRANSITION")) {
+            Particle p = tryParticle(cand);
+            if (p != null && isDustLike(p)) return p;
+        }
+        Particle[] all = Particle.values();
+        return all.length > 0 ? all[0] : null;
     }
 
-    public String msgThankedChat() { var m = msgCfg(); return m == null || m.player() == null || m.player().thankedChat() == null ? "" : m.player().thankedChat(); }
-    public String msgTitleMain() { var m = msgCfg(); return m == null || m.player() == null || m.player().titleMain() == null ? "" : m.player().titleMain(); }
-    public String msgTitleSub() { var m = msgCfg(); return m == null || m.player() == null || m.player().titleSub() == null ? "" : m.player().titleSub(); }
-    public String msgCooldown() { var m = msgCfg(); return m == null || m.player() == null || m.player().cooldown() == null ? "" : m.player().cooldown(); }
-    public String msgWrongWorld() { var m = msgCfg(); return m == null || m.player() == null || m.player().wrongWorld() == null ? "" : m.player().wrongWorld(); }
-    public String msgReloaded() { var m = msgCfg(); return m == null || m.admin() == null || m.admin().reloaded() == null ? "" : m.admin().reloaded(); }
-    public String msgStatsGlobal() { var m = msgCfg(); return m == null || m.admin() == null || m.admin().statsGlobal() == null ? "" : m.admin().statsGlobal(); }
-    public String msgStatsPlayer() { var m = msgCfg(); return m == null || m.admin() == null || m.admin().statsPlayer() == null ? "" : m.admin().statsPlayer(); }
-    public String msgStatsPlayerNone() { var m = msgCfg(); return m == null || m.admin() == null || m.admin().statsPlayerNone() == null ? "" : m.admin().statsPlayerNone(); }
+    public Particle splashParticle() {
+        var eff = cfg().effects();
+        String type = eff == null || eff.particleSplashType() == null ? "WATER_SPLASH" : eff.particleSplashType();
+        for (String cand : List.of(type, "WATER_SPLASH", "SPLASH", "BUBBLE", "BUBBLE_POP", "FALLING_WATER")) {
+            Particle p = tryParticle(cand);
+            if (p != null) return p;
+        }
+        Particle[] all = Particle.values();
+        return all.length > 0 ? all[0] : null;
+    }
+
+    public Particle.DustOptions dustOptions() {
+        Color color = parseColor();
+        float size = (float) dustSize();
+        return new Particle.DustOptions(color, Math.max(0.1f, size));
+    }
+
+    public double dustSize() {
+        var eff = cfg().effects();
+        double size = eff == null ? 1.5 : eff.particleDustSize();
+        if (size <= 0) size = 1.5;
+        return size;
+    }
+
+    public Color parseColor() {
+        var eff = cfg().effects();
+        String raw = eff == null ? null : eff.particleDustColor();
+        if (raw == null || raw.isBlank()) return Color.fromRGB(255, 0, 0);
+        String s = raw.trim();
+        try {
+            if (s.startsWith("#")) {
+                int rgb = Integer.parseInt(s.substring(1), 16);
+                return Color.fromRGB(rgb);
+            }
+            if (s.contains(",")) {
+                String[] parts = s.split(",");
+                int r = Integer.parseInt(parts[0].trim());
+                int g = Integer.parseInt(parts[1].trim());
+                int b = Integer.parseInt(parts[2].trim());
+                return Color.fromRGB(clamp(r), clamp(g), clamp(b));
+            }
+        } catch (Throwable ignored) {}
+        return Color.fromRGB(255, 0, 0);
+    }
+
+    private int clamp(int v) { return Math.max(0, Math.min(255, v)); }
+
+    private Particle tryParticle(String name) {
+        if (name == null) return null;
+        String n = name.trim();
+        try { return Particle.valueOf(n.toUpperCase(Locale.ROOT)); } catch (IllegalArgumentException ignored) {}
+        return null;
+    }
+
+    private boolean isDustLike(Particle p) {
+        String n = p.name();
+        return n.equalsIgnoreCase("REDSTONE") || n.equalsIgnoreCase("DUST") || n.equalsIgnoreCase("DUST_COLOR_TRANSITION");
+    }
+
+    public String prefix() {
+        var m = msgCfg();
+        return m.prefix() == null ? "" : m.prefix();
+    }
+
+    public String msgThankedChat() { var m = msgCfg(); return m.player() == null || m.player().thankedChat() == null ? "" : m.player().thankedChat(); }
+    public String msgTitleMain() { var m = msgCfg(); return m.player() == null || m.player().titleMain() == null ? "" : m.player().titleMain(); }
+    public String msgTitleSub() { var m = msgCfg(); return m.player() == null || m.player().titleSub() == null ? "" : m.player().titleSub(); }
+    public String msgCooldown() { var m = msgCfg(); return m.player() == null || m.player().cooldown() == null ? "" : m.player().cooldown(); }
+    public String msgWrongWorld() { var m = msgCfg(); return m.player() == null || m.player().wrongWorld() == null ? "" : m.player().wrongWorld(); }
+    public String msgReloaded() { var m = msgCfg(); return m.admin() == null || m.admin().reloaded() == null ? "" : m.admin().reloaded(); }
+    public String msgStatsGlobal() { var m = msgCfg(); return m.admin() == null || m.admin().statsGlobal() == null ? "" : m.admin().statsGlobal(); }
+    public String msgStatsPlayer() { var m = msgCfg(); return m.admin() == null || m.admin().statsPlayer() == null ? "" : m.admin().statsPlayer(); }
+    public String msgStatsPlayerNone() { var m = msgCfg(); return m.admin() == null || m.admin().statsPlayerNone() == null ? "" : m.admin().statsPlayerNone(); }
 
     public String dbFile() {
-        var c = cfg();
-        return c == null || c.database() == null || c.database().file() == null ? "gratitude.db" : c.database().file();
+        var d = cfg().database();
+        return d == null || d.file() == null ? "gratitude.db" : d.file();
     }
 
     public void reload() {

@@ -7,7 +7,6 @@ import me.mapacheee.gratituderoses.shared.ConfigService;
 import me.mapacheee.gratituderoses.shared.SchedulerService;
 import me.mapacheee.gratituderoses.shared.TextService;
 import me.mapacheee.gratituderoses.storage.StorageService;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -147,31 +146,24 @@ public class GratitudeService {
         var world = at.getWorld();
         if (world == null) return;
         int count = config.particleCount();
-        Particle dustParticle = resolveParticle(new String[]{"REDSTONE", "DUST"});
-        Particle splashParticle = resolveParticle(new String[]{"WATER_SPLASH", "SPLASH", "BUBBLE"});
-        Particle.DustOptions dust = new Particle.DustOptions(Color.fromRGB(255, 0, 0), 1.5f);
+        Particle dustP = config.dustParticle();
+        Particle splashP = config.splashParticle();
+        Particle.DustOptions dust = config.dustOptions();
         int durationTicks = config.effectsDurationSeconds() * 20;
         for (int i = 0; i < durationTicks; i += 5) {
             final int delay = i;
             scheduler.runLaterSync(() -> {
-                if (dustParticle != null && isDustLike(dustParticle)) {
-                    world.spawnParticle(dustParticle, at, count, 0.3, 0.2, 0.3, dust);
+                if (dustP != null && isDustLike(dustP)) {
+                    world.spawnParticle(dustP, at, count, 0.3, 0.2, 0.3, dust);
                 }
-                if (splashParticle != null) {
-                    world.spawnParticle(splashParticle, at, Math.max(5, count / 3), 0.3, 0.2, 0.3, 0.01);
+                if (splashP != null) {
+                    world.spawnParticle(splashP, at, Math.max(5, count / 3), 0.3, 0.2, 0.3, 0.01);
                 }
             }, delay);
         }
         for (me.mapacheee.gratituderoses.shared.ConfigService.SoundSpec s : config.soundSpecs()) {
             world.playSound(at, s.sound(), s.volume(), s.pitch());
         }
-    }
-
-    private Particle resolveParticle(String[] names) {
-        for (String n : names) {
-            try { return Particle.valueOf(n); } catch (IllegalArgumentException ignored) {}
-        }
-        return null;
     }
 
     private boolean isDustLike(Particle p) {
