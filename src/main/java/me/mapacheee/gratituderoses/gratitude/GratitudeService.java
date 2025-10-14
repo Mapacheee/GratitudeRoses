@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /* This class if to handle the gratitude flow: detect water contact, record DB, fire effects, messages and return hotbar rose */
 
@@ -31,6 +32,7 @@ public class GratitudeService {
     private final StorageService storage;
     private final HotbarService hotbar;
     private final Map<UUID, Long> cooldowns = new ConcurrentHashMap<>();
+    private final Map<UUID, TrackedDrop> tracked = new ConcurrentHashMap<>();
 
     @Inject
     public GratitudeService(ConfigService config, TextService text, SchedulerService scheduler, StorageService storage, HotbarService hotbar) {
@@ -70,29 +72,63 @@ public class GratitudeService {
     public void onDroppedTracked(Item item, Player player) {
         final long timeoutTicks = config.detectionWindowSeconds() * 20L;
         final long[] elapsed = {0L};
-        final boolean[] done = {false};
-        scheduler.runRegion(item, () -> {});
-        scheduler.runRegionLater(item, () -> {}, 1L);
+        final AtomicBoolean done = new AtomicBoolean(false);
+        final UUID itemId = item.getUniqueId();
+        tracked.put(itemId, new TrackedDrop(player.getUniqueId(), done));
+
+        int retSec = Math.max(1, config.returnItemAfterSeconds());
+        scheduler.runRegionLater(item, () -> {
+            if (done.get()) return;
+            if (!item.isValid() || item.isDead()) {
+                complete(itemId);
+                return;
+            }
+            done.set(true);
+            if (player.isOnline()) hotbar.giveTo(player);
+            item.remove();
+            complete(itemId);
+        }, retSec * 20L);
+
         scheduler.runRegion(item, new Runnable() {
             @Override
             public void run() {
-                if (done[0]) return;
-                if (!item.isValid() || item.isDead()) return;
+                if (done.get()) return;
+                if (!item.isValid() || item.isDead()) {
+                    complete(itemId);
+                    return;
+                }
                 Location loc = item.getLocation();
                 if (isWaterAt(loc)) {
-                    done[0] = true;
+                    done.set(true);
                     item.remove();
+                    complete(itemId);
                     handleGratitude(player, loc);
                     return;
                 }
                 elapsed[0] += 2L;
                 if (elapsed[0] >= timeoutTicks) {
-                    done[0] = true;
                     return;
                 }
                 scheduler.runRegionLater(item, this, 2L);
             }
         });
+    }
+
+    public boolean onPickupAttempt(Player picker, Item item) {
+        TrackedDrop td = tracked.get(item.getUniqueId());
+        if (td == null) return false;
+        if (picker.getUniqueId().equals(td.owner())) return false;
+        if (td.done.get()) return true;
+        td.done.set(true);
+        Player owner = picker.getServer().getPlayer(td.owner());
+        if (owner != null && owner.isOnline()) hotbar.giveTo(owner);
+        item.remove();
+        complete(item.getUniqueId());
+        return true;
+    }
+
+    private void complete(UUID itemId) {
+        tracked.remove(itemId);
     }
 
     private boolean isWaterAt(Location loc) {
@@ -167,4 +203,6 @@ public class GratitudeService {
         String n = p.toString();
         return n.equalsIgnoreCase("REDSTONE") || n.equalsIgnoreCase("DUST");
     }
+
+    private record TrackedDrop(UUID owner, AtomicBoolean done) {}
 }
