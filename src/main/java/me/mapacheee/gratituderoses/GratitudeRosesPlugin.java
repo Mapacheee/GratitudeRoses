@@ -37,5 +37,9 @@ public final class GratitudeRosesPlugin extends PaperWinterPlugin {
             provider.unregisterExpansion();
         } catch (Throwable ignored) {
         }
+        try {
+            var storage = getService(me.mapacheee.gratituderoses.storage.StorageService.class);
+            storage.close();
+        } catch (Throwable ignored) {}
     }
 }

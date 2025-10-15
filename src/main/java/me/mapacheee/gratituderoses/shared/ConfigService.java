@@ -159,7 +159,6 @@ public class ConfigService {
     public Particle dustParticle() {
         var eff = cfg().effects();
         String type = eff == null || eff.particleDustType() == null ? "REDSTONE" : eff.particleDustType();
-        // Try multiple dust-like names
         for (String cand : List.of(type, "REDSTONE", "DUST", "DUST_COLOR_TRANSITION")) {
             Particle p = tryParticle(cand);
             if (p != null && isDustLike(p)) return p;
@@ -246,6 +245,25 @@ public class ConfigService {
         var d = cfg().database();
         return d == null || d.file() == null ? "gratitude.db" : d.file();
     }
+
+    public String dbType() {
+        var d = cfg().database();
+        String t = d == null || d.type() == null ? "SQLITE" : d.type();
+        return t.trim().equalsIgnoreCase("MYSQL") ? "MYSQL" : "SQLITE";
+    }
+
+    public String dbHost() { var d = cfg().database(); return d == null || d.host() == null ? "localhost" : d.host(); }
+    public int dbPort() { var d = cfg().database(); return d == null || d.port() == 0 ? 3306 : d.port(); }
+    public String dbName() { var d = cfg().database(); return d == null || d.name() == null ? "gratitude" : d.name(); }
+    public String dbUser() { var d = cfg().database(); return d == null || d.user() == null ? "root" : d.user(); }
+    public String dbPassword() { var d = cfg().database(); return d == null || d.password() == null ? "" : d.password(); }
+    public boolean dbUseSsl() { var d = cfg().database(); return d != null && d.useSsl(); }
+    public String dbParams() { var d = cfg().database(); return d == null || d.params() == null ? "" : d.params(); }
+
+    public int poolMaxSize() { var d = cfg().database(); int v = d == null ? 10 : d.poolMaxSize(); return v <= 0 ? 10 : v; }
+    public int poolMinIdle() { var d = cfg().database(); int v = d == null ? 2 : d.poolMinIdle(); return Math.max(0, v); }
+    public long connTimeoutMs() { var d = cfg().database(); long v = d == null ? 10000L : d.connectionTimeoutMs(); return v <= 0 ? 10000L : v; }
+    public long leakDetectMs() { var d = cfg().database(); long v = d == null ? 0L : d.leakDetectionThresholdMs(); return Math.max(0L, v); }
 
     public void reload() {
         try { configC.reload(); } catch (Throwable ignored) {}

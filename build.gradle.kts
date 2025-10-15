@@ -35,6 +35,9 @@ dependencies {
     annotationProcessor("com.thewinterframework:command:1.0.1")
 
     implementation("org.xerial:sqlite-jdbc:3.46.0.0")
+    implementation("com.zaxxer:HikariCP:5.1.0")
+    implementation("com.mysql:mysql-connector-j:8.4.0")
+
     compileOnly("me.clip:placeholderapi:2.11.6")
 
     implementation("net.kyori:adventure-text-minimessage:4.17.0")

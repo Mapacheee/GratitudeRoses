@@ -45,5 +45,19 @@ public record AppConfig(
     public record SoundSpec(String name, double volume, double pitch) {}
 
     @ConfigSerializable
-    public record Database(String file) {}
+    public record Database(
+            @Setting("type") String type,
+            @Setting("file") String file,
+            @Setting("host") String host,
+            @Setting("port") int port,
+            @Setting("name") String name,
+            @Setting("user") String user,
+            @Setting("password") String password,
+            @Setting("use-ssl") boolean useSsl,
+            @Setting("params") String params,
+            @Setting("pool-max-size") int poolMaxSize,
+            @Setting("pool-min-idle") int poolMinIdle,
+            @Setting("connection-timeout-ms") long connectionTimeoutMs,
+            @Setting("leak-detection-threshold-ms") long leakDetectionThresholdMs
+    ) {}
 }
