@@ -27,7 +27,7 @@ effects:
       volume: 1.0
       pitch: 1.0
 database:
-  type: SQLITE //SQLITE or MYSQL
+  type: SQLITE #SQLITE or MYSQL
   file: gratitude.db
   host: localhost
   port: 3306
