@@ -26,6 +26,10 @@ effects:
     - name: ENTITY_PLAYER_LEVELUP
       volume: 1.0
       pitch: 1.0
+worldguard:
+  enabled: true
+  allowed-regions:
+    - world
 database:
   type: SQLITE #SQLITE or MYSQL
   file: gratitude.db

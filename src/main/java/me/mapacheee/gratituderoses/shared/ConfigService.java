@@ -35,6 +35,20 @@ public class ConfigService {
         return list == null ? Collections.emptyList() : list;
     }
 
+    public boolean wgEnabled() {
+        var wg = cfg().worldguard();
+        return wg != null && wg.enabled();
+    }
+
+    public Set<String> wgAllowedRegionsLower() {
+        var wg = cfg().worldguard();
+        List<String> list = wg == null ? null : wg.allowedRegions();
+        if (list == null) return Collections.emptySet();
+        Set<String> out = new HashSet<>();
+        for (String s : list) if (s != null && !s.isBlank()) out.add(s.toLowerCase(Locale.ROOT));
+        return out;
+    }
+
     public Set<Material> triggerMaterials() {
         List<String> list = cfg().item() == null ? List.of("ROSE_BUSH") : cfg().item().triggerMaterials();
         if (list == null || list.isEmpty()) list = List.of("ROSE_BUSH");

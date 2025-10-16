@@ -14,7 +14,8 @@ public record AppConfig(
         Item item,
         Detection detection,
         Effects effects,
-        Database database
+        Database database,
+        @Setting("worldguard") WorldGuardSection worldguard
 ) {
     @ConfigSerializable
     public record Item(@Setting("trigger-materials") List<String> triggerMaterials, Hotbar hotbar) {}
@@ -59,5 +60,11 @@ public record AppConfig(
             @Setting("pool-min-idle") int poolMinIdle,
             @Setting("connection-timeout-ms") long connectionTimeoutMs,
             @Setting("leak-detection-threshold-ms") long leakDetectionThresholdMs
+    ) {}
+
+    @ConfigSerializable
+    public record WorldGuardSection(
+            boolean enabled,
+            @Setting("allowed-regions") List<String> allowedRegions
     ) {}
 }

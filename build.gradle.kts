@@ -20,6 +20,7 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://repo.extendedclip.com/releases/")
+    maven("https://maven.enginehub.org/repo/")
 }
 
 dependencies {
@@ -39,6 +40,7 @@ dependencies {
     implementation("com.mysql:mysql-connector-j:8.4.0")
 
     compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14")
 
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.17.0")

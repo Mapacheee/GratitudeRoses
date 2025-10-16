@@ -3,6 +3,7 @@ package me.mapacheee.gratituderoses.gratitude;
 import com.google.inject.Inject;
 import com.thewinterframework.service.annotation.Service;
 import me.mapacheee.gratituderoses.hotbar.HotbarService;
+import me.mapacheee.gratituderoses.integration.WorldGuardRegionService;
 import me.mapacheee.gratituderoses.shared.ConfigService;
 import me.mapacheee.gratituderoses.shared.SchedulerService;
 import me.mapacheee.gratituderoses.shared.TextService;
@@ -31,16 +32,18 @@ public class GratitudeService {
     private final SchedulerService scheduler;
     private final StorageService storage;
     private final HotbarService hotbar;
+    private final WorldGuardRegionService wgRegions;
     private final Map<UUID, Long> cooldowns = new ConcurrentHashMap<>();
     private final Map<UUID, TrackedDrop> tracked = new ConcurrentHashMap<>();
 
     @Inject
-    public GratitudeService(ConfigService config, TextService text, SchedulerService scheduler, StorageService storage, HotbarService hotbar) {
+    public GratitudeService(ConfigService config, TextService text, SchedulerService scheduler, StorageService storage, HotbarService hotbar, WorldGuardRegionService wgRegions) {
         this.config = config;
         this.text = text;
         this.scheduler = scheduler;
         this.storage = storage;
         this.hotbar = hotbar;
+        this.wgRegions = wgRegions;
     }
 
     public boolean isTriggerMaterial(Material material) {
@@ -99,11 +102,13 @@ public class GratitudeService {
                 }
                 Location loc = item.getLocation();
                 if (isWaterAt(loc)) {
-                    done.set(true);
-                    item.remove();
-                    complete(itemId);
-                    handleGratitude(player, loc);
-                    return;
+                    if (wgRegions.isAllowed(loc)) {
+                        done.set(true);
+                        item.remove();
+                        complete(itemId);
+                        handleGratitude(player, loc);
+                        return;
+                    }
                 }
                 elapsed[0] += 2L;
                 if (elapsed[0] >= timeoutTicks) {
@@ -133,7 +138,7 @@ public class GratitudeService {
 
     private boolean isWaterAt(Location loc) {
         Material type = loc.getBlock().getType();
-        if (type == Material.WATER) return true;
+        if (type == org.bukkit.Material.WATER) return true;
         BlockData data = loc.getBlock().getBlockData();
         if (data instanceof Waterlogged wl) {
             return wl.isWaterlogged();
@@ -150,7 +155,7 @@ public class GratitudeService {
                 storage.recordLaunch(player.getUniqueId(), player.getName());
                 total = storage.totalLaunches();
                 number = total;
-            } catch (SQLException e) {
+            } catch (java.sql.SQLException e) {
                 number = -1L;
                 total = -1L;
             }
@@ -204,5 +209,5 @@ public class GratitudeService {
         return n.equalsIgnoreCase("REDSTONE") || n.equalsIgnoreCase("DUST");
     }
 
-    private record TrackedDrop(UUID owner, AtomicBoolean done) {}
+    private record TrackedDrop(UUID owner, java.util.concurrent.atomic.AtomicBoolean done) {}
 }

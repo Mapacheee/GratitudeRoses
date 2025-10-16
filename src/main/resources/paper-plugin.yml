@@ -11,8 +11,11 @@ dependencies:
     optional: true
     bootstrap: false
     load: AFTER
+  - name: WorldGuard
+    optional: true
+    bootstrap: false
+    load: AFTER
 permissions:
   gratituderoses.admin:
     description: access to admin commands
     default: op
-
