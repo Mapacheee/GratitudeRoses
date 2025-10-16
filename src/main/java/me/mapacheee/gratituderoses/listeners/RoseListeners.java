@@ -100,27 +100,46 @@ public class RoseListeners implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (!hotbarService.isEnabledWorld(p.getWorld().getName())) return;
         int roseSlot = hotbarService.roseSlot();
+        var bottom = p.getInventory();
         var clickedInv = e.getClickedInventory();
         var current = e.getCurrentItem();
         var cursor = e.getCursor();
         boolean currentIsRose = hotbarService.isPluginRose(current);
         boolean cursorIsRose = hotbarService.isPluginRose(cursor);
+        boolean clickingBottom = clickedInv != null && clickedInv.equals(bottom);
 
-        if (clickedInv == p.getInventory()) {
-            if (currentIsRose && e.getSlot() != roseSlot) { e.setCancelled(true); return; }
-            if (cursorIsRose && e.getSlot() != roseSlot) { e.setCancelled(true); return; }
-            if (e.getSlot() == roseSlot && !currentIsRose && !cursorIsRose) { e.setCancelled(true); return; }
+        if (clickingBottom) {
+            if (e.getSlot() == roseSlot) {
+                e.setCancelled(true);
+                scheduler.runLaterSync(() -> hotbarService.ensurePosition(p), 1L);
+                return;
+            }
+            if (currentIsRose || cursorIsRose) {
+                e.setCancelled(true);
+                scheduler.runLaterSync(() -> hotbarService.ensurePosition(p), 1L);
+                return;
+            }
         }
 
         int hb = e.getHotbarButton();
         if (hb >= 0) {
-            var hotbarItem = p.getInventory().getItem(hb);
-            boolean hbIsRose = hotbarService.isPluginRose(hotbarItem);
-            if (hb == roseSlot && !hotbarService.isPluginRose(e.getCurrentItem())) { e.setCancelled(true); }
-            if (hbIsRose && e.getSlot() != roseSlot) { e.setCancelled(true); }
-            if (hb != roseSlot && currentIsRose) { e.setCancelled(true); }
+            if (hb == roseSlot) {
+                e.setCancelled(true);
+                scheduler.runLaterSync(() -> hotbarService.ensurePosition(p), 1L);
+                return;
+            }
+            if (currentIsRose) {
+                e.setCancelled(true);
+                scheduler.runLaterSync(() -> hotbarService.ensurePosition(p), 1L);
+                return;
+            }
+            var hbItem = bottom.getItem(hb);
+            if (hotbarService.isPluginRose(hbItem)) {
+                e.setCancelled(true);
+                scheduler.runLaterSync(() -> hotbarService.ensurePosition(p), 1L);
+                return;
+            }
         }
-        scheduler.runLaterSync(() -> hotbarService.ensurePosition(p), 1L);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -133,12 +152,14 @@ public class RoseListeners implements Listener {
         var cursor = e.getOldCursor();
         boolean cursorIsRose = hotbarService.isPluginRose(cursor);
         if (cursorIsRose) {
-            if (e.getRawSlots().stream().anyMatch(s -> s != roseRaw)) { e.setCancelled(true); }
+            e.setCancelled(true);
             scheduler.runLaterSync(() -> hotbarService.ensurePosition(p), 1L);
             return;
         }
-        if (e.getRawSlots().stream().anyMatch(s -> s == roseRaw)) { e.setCancelled(true); }
-        scheduler.runLaterSync(() -> hotbarService.ensurePosition(p), 1L);
+        if (e.getRawSlots().stream().anyMatch(s -> s == roseRaw)) {
+            e.setCancelled(true);
+            scheduler.runLaterSync(() -> hotbarService.ensurePosition(p), 1L);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
