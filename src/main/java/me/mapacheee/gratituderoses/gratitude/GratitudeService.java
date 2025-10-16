@@ -122,7 +122,6 @@ public class GratitudeService {
     public boolean onPickupAttempt(Player picker, Item item) {
         TrackedDrop td = tracked.get(item.getUniqueId());
         if (td == null) return false;
-        if (picker.getUniqueId().equals(td.owner())) return false;
         if (td.done.get()) return true;
         td.done.set(true);
         Player owner = picker.getServer().getPlayer(td.owner());
