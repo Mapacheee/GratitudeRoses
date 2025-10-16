@@ -5,7 +5,7 @@ item:
     - ROSE_BUSH
   hotbar:
     enabled: true
-    slot: 4
+    slot: 9
     name: "&c&lRosa de Gratitud"
     lore:
       - "&7Lanza esta rosa al agua para agradecer."
