@@ -6,6 +6,9 @@ description: ${description}
 authors: ["Mapacheee"]
 website: ""
 folia-supported: true
+libraries:
+  - org.xerial:sqlite-jdbc:3.46.0.0
+  - com.mysql:mysql-connector-j:8.4.0
 dependencies:
   - name: PlaceholderAPI
     optional: true

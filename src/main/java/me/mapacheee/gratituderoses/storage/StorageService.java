@@ -36,6 +36,7 @@ public class StorageService {
     private void initPool() {
         this.dialect = cfg.dbType();
         HikariConfig hc = new HikariConfig();
+        boolean driverOk = true;
         if ("MYSQL".equalsIgnoreCase(dialect)) {
             String host = cfg.dbHost();
             int port = cfg.dbPort();
@@ -52,11 +53,19 @@ public class StorageService {
             hc.setUsername(cfg.dbUser());
             hc.setPassword(cfg.dbPassword());
             hc.setDriverClassName("com.mysql.cj.jdbc.Driver");
+            try { Class.forName("com.mysql.cj.jdbc.Driver"); } catch (ClassNotFoundException e) { driverOk = false; }
             hc.addDataSourceProperty("cachePrepStmts", "true");
             hc.addDataSourceProperty("prepStmtCacheSize", "250");
             hc.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         } else {
             hc.setJdbcUrl("jdbc:sqlite:" + dbPath);
+            hc.setDriverClassName("org.sqlite.JDBC");
+            try { Class.forName("org.sqlite.JDBC"); } catch (ClassNotFoundException e) { driverOk = false; }
+        }
+        if (!driverOk) {
+            plugin.getLogger().severe("JDBC driver not found for " + dialect + ". Configure 'libraries' in paper-plugin.yml or add the driver JAR to the server.");
+            this.dataSource = null;
+            return;
         }
         hc.setMaximumPoolSize(cfg.poolMaxSize());
         hc.setMinimumIdle(cfg.poolMinIdle());
@@ -68,6 +77,7 @@ public class StorageService {
     }
 
     private void initSchema() {
+        if (dataSource == null) return;
         try (Connection con = getConnection(); Statement st = con.createStatement()) {
             if ("SQLITE".equalsIgnoreCase(dialect)) {
                 st.executeUpdate("PRAGMA journal_mode=WAL");
@@ -94,6 +104,7 @@ public class StorageService {
     }
 
     private Connection getConnection() throws SQLException {
+        if (dataSource == null) throw new SQLException("No DataSource available (driver missing)");
         return dataSource.getConnection();
     }
 

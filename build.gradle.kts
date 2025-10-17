@@ -1,7 +1,7 @@
 plugins {
     java
     `java-library`
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "9.2.2"
 }
 
 group = "me.mapacheee.gratituderoses"
@@ -35,15 +35,14 @@ dependencies {
     api("com.thewinterframework:command:1.0.1")
     annotationProcessor("com.thewinterframework:command:1.0.1")
 
-    implementation("org.xerial:sqlite-jdbc:3.46.0.0")
     implementation("com.zaxxer:HikariCP:5.1.0")
-    implementation("com.mysql:mysql-connector-j:8.4.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.17.0")
+
+    runtimeOnly("org.xerial:sqlite-jdbc:3.46.0.0")
+    runtimeOnly("com.mysql:mysql-connector-j:8.4.0")
 
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14")
-
-    implementation("net.kyori:adventure-text-minimessage:4.17.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.17.0")
 }
 
 tasks.processResources {
@@ -59,6 +58,12 @@ tasks.processResources {
 
 tasks.shadowJar {
     archiveClassifier.set("")
+    exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
+    relocate("com.zaxxer.hikari", "me.mapacheee.gratituderoses.libs.hikari")
+    dependencies {
+        exclude(dependency("org.xerial:sqlite-jdbc:.*"))
+        exclude(dependency("com.mysql:mysql-connector-j:.*"))
+    }
 }
 
 tasks.build {
