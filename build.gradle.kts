@@ -1,7 +1,8 @@
 plugins {
     java
     `java-library`
-    id("com.gradleup.shadow") version "9.2.2"
+    id("com.gradleup.shadow") version "8.3.2"
+    id("io.github.revxrsal.zapper") version "1.0.3"
 }
 
 group = "me.mapacheee.gratituderoses"
@@ -22,6 +23,8 @@ repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://repo.extendedclip.com/releases/")
     maven("https://maven.enginehub.org/repo/")
+    maven("https://oss.sonatype.org/content/repositories/central")
+    maven("https://hub.spigotmc.org/nexus/content/groups/public/")
 }
 
 dependencies {
@@ -37,14 +40,21 @@ dependencies {
     //api("com.thewinterframework:command:1.0.1")
     //annotationProcessor("com.thewinterframework:command:1.0.1")
 
-    implementation("com.zaxxer:HikariCP:5.1.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.17.0")
+    zap("com.zaxxer:HikariCP:5.1.0")
+    zap("org.xerial:sqlite-jdbc:3.46.0.0")
+    zap("com.mysql:mysql-connector-j:8.4.0")
 
-    runtimeOnly("org.xerial:sqlite-jdbc:3.46.0.0")
-    runtimeOnly("com.mysql:mysql-connector-j:8.4.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.17.0")
+    implementation("io.github.revxrsal:zapper.api:1.0.3")
 
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14")
+}
+
+zapper {
+    libsFolder = "libraries"
+    relocationPrefix = "me.mapacheee.gratituderoses.libs"
+    relocate("com.zaxxer.hikari", "hikari")
 }
 
 tasks.processResources {
@@ -61,11 +71,6 @@ tasks.processResources {
 tasks.shadowJar {
     archiveClassifier.set("")
     exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
-    relocate("com.zaxxer.hikari", "me.mapacheee.gratituderoses.libs.hikari")
-    dependencies {
-        exclude(dependency("org.xerial:sqlite-jdbc:.*"))
-        exclude(dependency("com.mysql:mysql-connector-j:.*"))
-    }
 }
 
 tasks.build {
