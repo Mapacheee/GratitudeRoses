@@ -12,12 +12,11 @@ libraries:
   - net.kyori:adventure-text-serializer-legacy:4.17.0
 
 dependencies:
-  bootstrap:
+  server:
     WinterCore:
       load: BEFORE
       required: true
       join-classpath: true
-  server:
     PlaceholderAPI:
       required: false
     WorldGuard:

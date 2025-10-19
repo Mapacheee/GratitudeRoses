@@ -16,7 +16,6 @@ import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;

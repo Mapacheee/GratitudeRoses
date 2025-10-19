@@ -5,9 +5,6 @@ import com.thewinterframework.plugin.WinterBootPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
-import java.io.File;
-import java.net.URLClassLoader;
-
 @WinterBootPlugin
 public final class GratitudeRosesPlugin extends PaperWinterPlugin {
     private static GratitudeRosesPlugin instance;

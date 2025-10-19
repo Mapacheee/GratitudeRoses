@@ -1,6 +1,9 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
-    java
-    `java-library`
+    id("java")
+    id("java-library")
+    id("com.gradleup.shadow") version "9.2.2"
 }
 
 group = "me.mapacheee.gratituderoses"
@@ -27,12 +30,15 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
 
     compileOnlyApi("com.thewinterframework:wintercore:1.0.0")
-    //compileOnly(files("libs/wintercore-1.0.0.jar"))
+    annotationProcessor("com.thewinterframework:wintercore:1.0.0")
+
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14")
-
     compileOnly("com.zaxxer:HikariCP:5.1.0")
     compileOnly("org.xerial:sqlite-jdbc:3.46.0.0")
     compileOnly("com.mysql:mysql-connector-j:8.4.0")
     compileOnly("net.kyori:adventure-text-serializer-legacy:4.17.0")
 }
+/*tasks.named<ShadowJar>("shadowJar") {
+    exclude("com/thewinterframework/**")
+}*/
