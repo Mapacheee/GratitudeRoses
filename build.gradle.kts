@@ -29,8 +29,8 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
 
-    compileOnlyApi("com.thewinterframework:wintercore:1.0.0")
-    annotationProcessor("com.thewinterframework:wintercore:1.0.0")
+    compileOnlyApi("com.thewinterframework:WinterCore:1.0.0")
+    annotationProcessor("com.thewinterframework:WinterCore:1.0.0")
 
     //api("com.thewinterframework:paper:1.0.4")
     //annotationProcessor("com.thewinterframework:paper:1.0.4")
@@ -38,6 +38,9 @@ dependencies {
     //annotationProcessor("com.thewinterframework:configuration:1.0.2")
     //api("com.thewinterframework:command:1.0.1")
     //annotationProcessor("com.thewinterframework:command:1.0.1")
+    /*annotationProcessor("com.thewinterframework:command:1.0.1")
+    annotationProcessor("com.thewinterframework:configuration:1.0.2")
+    annotationProcessor("com.thewinterframework:core:1.0.4")*/
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14")
     implementation("net.kyori:adventure-text-serializer-legacy:4.17.0")
