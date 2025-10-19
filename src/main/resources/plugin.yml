@@ -9,7 +9,6 @@ depend:
 softdepend:
   - PlaceholderAPI
   - WorldGuard
-
 permissions:
   gratituderoses.admin:
     description: access to admin commands

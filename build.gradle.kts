@@ -3,7 +3,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     id("java")
     id("java-library")
-    id("com.gradleup.shadow") version "9.2.2"
+    id("com.gradleup.shadow") version "8.3.2"
 }
 
 group = "me.mapacheee.gratituderoses"
@@ -32,13 +32,18 @@ dependencies {
     compileOnlyApi("com.thewinterframework:wintercore:1.0.0")
     annotationProcessor("com.thewinterframework:wintercore:1.0.0")
 
+    //api("com.thewinterframework:paper:1.0.4")
+    //annotationProcessor("com.thewinterframework:paper:1.0.4")
+    //api("com.thewinterframework:configuration:1.0.2")
+    //annotationProcessor("com.thewinterframework:configuration:1.0.2")
+    //api("com.thewinterframework:command:1.0.1")
+    //annotationProcessor("com.thewinterframework:command:1.0.1")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14")
-    compileOnly("com.zaxxer:HikariCP:5.1.0")
-    compileOnly("org.xerial:sqlite-jdbc:3.46.0.0")
-    compileOnly("com.mysql:mysql-connector-j:8.4.0")
-    compileOnly("net.kyori:adventure-text-serializer-legacy:4.17.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.17.0")
+    implementation("com.zaxxer:HikariCP:7.0.2")
 }
+
 /*tasks.named<ShadowJar>("shadowJar") {
     exclude("com/thewinterframework/**")
 }*/

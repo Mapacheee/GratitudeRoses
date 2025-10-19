@@ -3,8 +3,6 @@ package me.mapacheee.gratituderoses.config;
 import com.thewinterframework.configurate.config.Configurate;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
-//import org.spongepowered.configurate.objectmapping.ConfigSerializable;
-//import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import java.util.List;
 

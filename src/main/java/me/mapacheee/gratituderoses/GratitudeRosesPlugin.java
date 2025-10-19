@@ -1,12 +1,17 @@
 package me.mapacheee.gratituderoses;
 
+import com.google.inject.Binder;
+import com.google.inject.Scopes;
 import com.thewinterframework.paper.PaperWinterPlugin;
 import com.thewinterframework.plugin.WinterBootPlugin;
+import com.thewinterframework.service.annotation.Service;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+
 @WinterBootPlugin
 public final class GratitudeRosesPlugin extends PaperWinterPlugin {
+
     private static GratitudeRosesPlugin instance;
 
     public static <T> T getService(Class<T> type) {
@@ -32,6 +37,11 @@ public final class GratitudeRosesPlugin extends PaperWinterPlugin {
             } catch (Throwable ignored) {
             }
         }
+    }
+
+    @Override
+    public void configure(Binder binder) {
+        binder.bindScope(Service.class, Scopes.SINGLETON);
     }
 
     @Override
