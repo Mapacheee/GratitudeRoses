@@ -1,27 +1,28 @@
-name: ${name}
-version: ${version}
+name: GratitudeRoses
+version: 1.0.0
 main: me.mapacheee.gratituderoses.GratitudeRosesPlugin
 api-version: "1.21"
-description: ${description}
+description: revenge lobby plugin
 authors: ["Mapacheee"]
-website: ""
 folia-supported: true
 libraries:
   - org.xerial:sqlite-jdbc:3.46.0.0
   - com.mysql:mysql-connector-j:8.4.0
+  - com.zaxxer:HikariCP:5.1.0
+  - net.kyori:adventure-text-serializer-legacy:4.17.0
+
 dependencies:
-  - name: WinterCore
-    optional: false
-    bootstrap: false
-    load: BEFORE
-  - name: PlaceholderAPI
-    optional: true
-    bootstrap: false
-    load: AFTER
-  - name: WorldGuard
-    optional: true
-    bootstrap: false
-    load: AFTER
+  bootstrap:
+    WinterCore:
+      load: BEFORE
+      required: true
+      join-classpath: true
+  server:
+    PlaceholderAPI:
+      required: false
+    WorldGuard:
+      required: false
+
 permissions:
   gratituderoses.admin:
     description: access to admin commands

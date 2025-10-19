@@ -1,11 +1,12 @@
 package me.mapacheee.gratituderoses.config;
 
-/* This class if to define the typed Configurate-backed configuration for the plugin */
 import com.thewinterframework.configurate.config.Configurate;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import java.util.List;
+
+/* This class if to define the typed Configurate-backed configuration for the plugin */
 
 @ConfigSerializable
 @Configurate("config")

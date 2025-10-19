@@ -1,0 +1,16 @@
+name: GratitudeRoses
+version: 1.0.0
+main: me.mapacheee.gratituderoses.GratitudeRosesPlugin
+api-version: "1.21"
+description: revenge lobby plugin
+authors: ["Mapacheee"]
+depend:
+  - WinterCore
+softdepend:
+  - PlaceholderAPI
+  - WorldGuard
+
+permissions:
+  gratituderoses.admin:
+    description: access to admin commands
+    default: op

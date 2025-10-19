@@ -2,9 +2,6 @@ package me.mapacheee.gratituderoses;
 
 import com.thewinterframework.paper.PaperWinterPlugin;
 import com.thewinterframework.plugin.WinterBootPlugin;
-import revxrsal.zapper.DependencyManager;
-import revxrsal.zapper.RuntimeLibPluginConfiguration;
-import revxrsal.zapper.classloader.URLClassLoaderWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -23,21 +20,6 @@ public final class GratitudeRosesPlugin extends PaperWinterPlugin {
     public void onPluginLoad() {
         super.onPluginLoad();
         instance = this;
-
-        RuntimeLibPluginConfiguration config = RuntimeLibPluginConfiguration.parse();
-        File libraries = new File(getDataFolder(), config.getLibsFolder());
-        if (!libraries.exists()) {
-            getLogger().info("[" + getName() + "] It appears you're running " + getName() + " for the first time.");
-            getLogger().info("[" + getName() + "] Please give me a few seconds to install dependencies. This is a one-time process.");
-        }
-        DependencyManager dependencyManager = new DependencyManager(
-                libraries,
-                URLClassLoaderWrapper.wrap((URLClassLoader) getClass().getClassLoader())
-        );
-        config.getDependencies().forEach(dependencyManager::dependency);
-        config.getRepositories().forEach(dependencyManager::repository);
-        config.getRelocations().forEach(dependencyManager::relocate);
-        dependencyManager.load();
     }
 
     @Override
