@@ -32,21 +32,12 @@ dependencies {
     compileOnlyApi("com.thewinterframework:WinterCore:1.0.0")
     annotationProcessor("com.thewinterframework:WinterCore:1.0.0")
 
-    //api("com.thewinterframework:paper:1.0.4")
-    //annotationProcessor("com.thewinterframework:paper:1.0.4")
-    //api("com.thewinterframework:configuration:1.0.2")
-    //annotationProcessor("com.thewinterframework:configuration:1.0.2")
-    //api("com.thewinterframework:command:1.0.1")
-    //annotationProcessor("com.thewinterframework:command:1.0.1")
-    /*annotationProcessor("com.thewinterframework:command:1.0.1")
-    annotationProcessor("com.thewinterframework:configuration:1.0.2")
-    annotationProcessor("com.thewinterframework:core:1.0.4")*/
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14")
     implementation("net.kyori:adventure-text-serializer-legacy:4.17.0")
     implementation("com.zaxxer:HikariCP:7.0.2")
 }
 
-/*tasks.named<ShadowJar>("shadowJar") {
-    exclude("com/thewinterframework/**")
-}*/
+tasks.shadowJar {
+    relocate("com.zaxxer.hikari", "me.mapacheee.gratituderoses.libs.hikari")
+}
